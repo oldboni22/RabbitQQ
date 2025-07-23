@@ -15,7 +15,7 @@ public class RabbitClientBase : IAsyncDisposable
     
     protected async Task CheckConnectionAvailability()
     {
-        if (_context.Connection != null && _context.Connection.IsOpen is false) 
+        if (_context.Connection == null || _context.Connection.IsOpen is false) 
         { 
             _context.Logger?.LogWarning("The connection with RabbitMq is unavailable. Trying to Reinitialize.");
             await _context.InitializeAsync();
