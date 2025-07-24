@@ -48,25 +48,25 @@ internal class RabbitPipeline : IRabbitPipeline
     #endregion
     
     #region Receivers
-    public async Task RegisterReceiverAsync(string receiverName, ReceiverQueueOptions options, AsyncEventHandler<BasicDeliverEventArgs> handler)
+    public async Task RegisterReceiverAsync(ReceiverQueueOptions options, AsyncEventHandler<BasicDeliverEventArgs> handler)
     {
-        if (_dictionary.ContainsKey(receiverName))
+        if (_dictionary.ContainsKey(options.Queue))
         {
-            _context._logger?.LogWarning($"A receiver with the name {receiverName} is already registered in the pipeline {_exchange}.");
+            _context._logger?.LogWarning($"A receiver with the name {options.Queue} is already registered in the pipeline {_exchange}.");
             return;
         }
         
         var receiver = _factory.CreateReceiver(options,handler);
         await receiver.InitializeAsync();
         
-        _dictionary.TryAdd(receiverName, receiver);
+        _dictionary.TryAdd(options.Queue, receiver);
     }
 
-    public async Task DisposeReceiverAsync(string receiverName)
+    public async Task DisposeReceiverAsync(string queue)
     {
-        if (_dictionary.TryRemove(receiverName,out var value) is false)
+        if (_dictionary.TryRemove(queue,out var value) is false)
         {
-            _context._logger?.LogWarning($"A receiver with the name {receiverName} is not registered in the pipeline {_exchange}.");
+            _context._logger?.LogWarning($"A receiver with the name {queue} is not registered in the pipeline {_exchange}.");
             return;
         }
         
