@@ -34,7 +34,7 @@ internal sealed class RabbitContext : IRabbitContext
         });
     }
 
-    public IRabbitPipeline? GetPipelineAsync(string exchange)
+    public IRabbitPipeline? GetPipeline(string exchange)
     {
         if (Dictionary.TryGetValue(exchange, out var value) is false)
         {
