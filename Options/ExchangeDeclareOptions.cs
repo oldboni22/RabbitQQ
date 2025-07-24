@@ -7,9 +7,7 @@ public record ExchangeDeclareOptions
         bool Exclusive,
         bool AutoDelete,
         bool Passive,
-        bool NoWait,
-        string RoutingKey,
-        bool AutoAck
+        bool NoWait
     );
 
 
