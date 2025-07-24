@@ -14,9 +14,9 @@ public class RabbitContextBuilder
     
     private ILogger? _logger;
     
-    static RabbitContextBuilder GetBuilder() => new RabbitContextBuilder();
+    public static RabbitContextBuilder GetBuilder() => new RabbitContextBuilder();
 
-    public RabbitContextBuilder AddReceiver(string exchange, ExchangeDeclareOptions options)
+    public RabbitContextBuilder AddPipeline(string exchange, ExchangeDeclareOptions options)
     {
         if (_dictionary.ContainsKey(exchange))
         {
