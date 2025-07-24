@@ -8,14 +8,13 @@ namespace RabbitQq.Clients;
 internal sealed class RabbitReceiver : RabbitClientBase
 {
     private readonly ReceiverQueueOptions _options;
-    private readonly string _exchange;
     private readonly AsyncEventHandler<BasicDeliverEventArgs> _handler;
     
-    internal RabbitReceiver(RabbitContext context,
-        ReceiverQueueOptions options, string exchange, AsyncEventHandler<BasicDeliverEventArgs> handler) : base(context)
+    internal RabbitReceiver(RabbitContext context, string exchange,
+        ReceiverQueueOptions options, AsyncEventHandler<BasicDeliverEventArgs> handler) : 
+        base(context,exchange)
     {
         _options = options;
-        _exchange = exchange;
         _handler = handler;
     }
 
@@ -58,7 +57,7 @@ internal sealed class RabbitReceiver : RabbitClientBase
         }
         catch(Exception ex)
         {
-            _context.Logger?.LogError(ex, "An exception occured while initializing a receiver.");
+            _context._logger?.LogError(ex, $"An exception occured while initializing a receiver in exchange {_exchange}.");
             throw;
         }
     }

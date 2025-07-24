@@ -4,5 +4,5 @@ namespace RabbitQq.Abstractions;
 
 public interface IRabbitContext : IAsyncDisposable
 {
-    ILogger? Logger { get; set; }
+    
 }

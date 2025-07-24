@@ -16,6 +16,8 @@ internal sealed class RabbitClientFactory
     }
 
     internal RabbitReceiver CreateReceiver(ReceiverQueueOptions options, AsyncEventHandler<BasicDeliverEventArgs> handler)
-        => new RabbitReceiver(_context, options, _exchange, handler);
+        => new RabbitReceiver(_context, _exchange, options, handler);
 
+    internal RabbitSender CreateSender(ExchangeDeclareOptions options)
+        => new RabbitSender(_context, _exchange, options);
 }
