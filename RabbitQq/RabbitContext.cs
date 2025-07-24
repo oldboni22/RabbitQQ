@@ -33,7 +33,18 @@ internal sealed class RabbitContext : IRabbitContext
             await pair.Value.DisposeAsync();
         });
     }
-    
+
+    public IRabbitPipeline? GetPipelineAsync(string exchange)
+    {
+        if (Dictionary.TryGetValue(exchange, out var value) is false)
+        {
+            _logger?.LogWarning($"No pipeline with exchange {exchange} is registered.");
+            return null;
+        }
+
+        return value;
+    }
+
     internal async Task InitializeAsync()
     {
         try
