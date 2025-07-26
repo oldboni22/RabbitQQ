@@ -7,13 +7,13 @@ namespace RabbitQq;
 
 internal sealed class RabbitContext : IRabbitContext
 {
-    internal ConcurrentDictionary<string, RabbitPipeline> Dictionary { get; set; }
+    internal ConcurrentDictionary<string, RabbitPipeline> Dictionary { get; set; } = new();
     private readonly ConnectionFactory _connectionFactory;
 
-    internal readonly ILogger? _logger;
+    internal readonly ILogger<IRabbitContext>? _logger;
     internal IConnection? Connection { get; private set; }
     
-    internal RabbitContext(ConnectionFactory connectionFactory, ILogger? logger)
+    internal RabbitContext(ConnectionFactory connectionFactory, ILogger<IRabbitContext>? logger)
     {
         _connectionFactory = connectionFactory;
         _logger = logger;

@@ -12,7 +12,7 @@ public class RabbitContextBuilder
 
     private readonly ConcurrentDictionary<string, ExchangeDeclareOptions> _dictionary = new();
     
-    private ILogger? _logger;
+    private ILogger<IRabbitContext>? _logger;
     
     public static RabbitContextBuilder GetBuilder() => new RabbitContextBuilder();
 
@@ -28,7 +28,7 @@ public class RabbitContextBuilder
         return this;
     }
     
-    public RabbitContextBuilder WithLogger(ILogger logger)
+    public RabbitContextBuilder WithLogger(ILogger<IRabbitContext> logger)
     {
         _logger = logger;
         return this;
