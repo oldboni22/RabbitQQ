@@ -6,6 +6,6 @@ namespace RabbitQq.Abstractions;
 public interface IRabbitPipeline
 {
     Task RegisterReceiverAsync(ReceiverQueueOptions options, AsyncEventHandler<BasicDeliverEventArgs> handler);
-    Task DisposeReceiverAsync(string queue);
+    Task DisposeReceiverAsync(string queueName);
     Task BasicPublishAsync(string route, string body);
 }

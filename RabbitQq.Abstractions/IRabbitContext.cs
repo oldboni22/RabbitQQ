@@ -4,5 +4,5 @@ namespace RabbitQq.Abstractions;
 
 public interface IRabbitContext : IAsyncDisposable
 {
-    IRabbitPipeline? GetPipeline(string exchange);
+    IRabbitPipeline? GetPipeline(string exchangeName);
 }

@@ -9,12 +9,12 @@ internal class RabbitClientBase : IAsyncDisposable
     
     protected readonly RabbitContext _context;
     protected IChannel? _channel;
-    protected readonly string _exchange;
+    protected readonly string _exchangeName;
     
-    protected RabbitClientBase(RabbitContext context, string exchange)
+    protected RabbitClientBase(RabbitContext context, string exchangeName)
     {
         _context = context;
-        _exchange = exchange;
+        _exchangeName = exchangeName;
     }
 
     protected async Task CheckConnectionAvailability()

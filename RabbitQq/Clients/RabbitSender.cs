@@ -9,7 +9,7 @@ internal sealed class RabbitSender : RabbitClientBase
 {
     private readonly ExchangeDeclareOptions _options;
     
-    public RabbitSender(RabbitContext context, string exchange, ExchangeDeclareOptions options) : base(context, exchange)
+    public RabbitSender(RabbitContext context, string exchangeName, ExchangeDeclareOptions options) : base(context, exchangeName)
     {
         _options = options;
     }
@@ -41,7 +41,7 @@ internal sealed class RabbitSender : RabbitClientBase
 
             await _channel.ExchangeDeclareAsync
             (
-                exchange: _exchange,
+                exchange: _exchangeName,
                 type: ExchangeTypeSwitch(_options.TypeEnum),
                 durable: _options.Durable,
                 autoDelete: _options.AutoDelete,
@@ -51,7 +51,7 @@ internal sealed class RabbitSender : RabbitClientBase
         }
         catch (Exception ex)
         {
-            _context._logger?.LogError(ex, $"An exception occured while initializing a sender in exchange {_exchange}.");
+            _context._logger?.LogError(ex, $"An exception occured while initializing a sender in exchange {_exchangeName}.");
             throw;
         }
     }
@@ -65,14 +65,14 @@ internal sealed class RabbitSender : RabbitClientBase
             var bytes = Encoding.UTF8.GetBytes(body);
             await _channel!.BasicPublishAsync
             (
-                _exchange,
+                _exchangeName,
                 routingKey: route,
                 body: bytes
             );
         }
         catch (Exception ex)
         {
-            _context._logger?.LogError(ex, $"An exception occured while publishing in exchange {_exchange}.");
+            _context._logger?.LogError(ex, $"An exception occured while publishing in exchange {_exchangeName}.");
             throw;
         }
     }

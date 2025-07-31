@@ -16,14 +16,14 @@ public class RabbitContextBuilder
     
     public static RabbitContextBuilder GetBuilder() => new RabbitContextBuilder();
 
-    public RabbitContextBuilder AddPipeline(string exchange, ExchangeDeclareOptions options)
+    public RabbitContextBuilder AddPipeline(string exchangeName, ExchangeDeclareOptions options)
     {
-        if (_dictionary.ContainsKey(exchange))
+        if (_dictionary.ContainsKey(exchangeName))
         {
             return this;
         }
 
-        _dictionary.TryAdd(exchange, options);
+        _dictionary.TryAdd(exchangeName, options);
         
         return this;
     }
@@ -39,21 +39,25 @@ public class RabbitContextBuilder
         var context = new RabbitContext(connectionFactory, _logger);
         await context.InitializeAsync();
 
-        var dict = new ConcurrentDictionary<string, RabbitPipeline>();
-        
+        var dictionary = new ConcurrentDictionary<string, RabbitPipeline>();
+
+        await InitializePipelines(context, dictionary);
+
+        context.Dictionary = dictionary;
+
+        return context;
+    }
+
+    private async Task InitializePipelines(RabbitContext context, ConcurrentDictionary<string, RabbitPipeline> dictionary)
+    {
         await Parallel.ForEachAsync
         (_dictionary, CancellationToken.None, async (pair, token) =>
         {
             var pipeline = new RabbitPipeline(context, pair.Key, pair.Value);
             await pipeline.InitializeAsync();
 
-            dict.TryAdd(pair.Key, pipeline);
+            dictionary.TryAdd(pair.Key, pipeline);
         });
-
-        context.Dictionary = dict;
-
-        return context;
     }
-
     
 }

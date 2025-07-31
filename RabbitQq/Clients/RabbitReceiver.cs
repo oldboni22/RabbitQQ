@@ -10,9 +10,9 @@ internal sealed class RabbitReceiver : RabbitClientBase
     private readonly ReceiverQueueOptions _options;
     private readonly AsyncEventHandler<BasicDeliverEventArgs> _handler;
     
-    internal RabbitReceiver(RabbitContext context, string exchange,
+    internal RabbitReceiver(RabbitContext context, string exchangeName,
         ReceiverQueueOptions options, AsyncEventHandler<BasicDeliverEventArgs> handler) : 
-        base(context,exchange)
+        base(context,exchangeName)
     {
         _options = options;
         _handler = handler;
@@ -39,7 +39,7 @@ internal sealed class RabbitReceiver : RabbitClientBase
             await _channel.QueueBindAsync
             (
                 queue: _options.Queue,
-                exchange: _exchange,
+                exchange: _exchangeName,
                 routingKey: _options.RoutingKey,
                 noWait: _options.NoWait
             );
@@ -57,7 +57,7 @@ internal sealed class RabbitReceiver : RabbitClientBase
         }
         catch(Exception ex)
         {
-            _context._logger?.LogError(ex, $"An exception occured while initializing a receiver in exchange {_exchange}.");
+            _context._logger?.LogError(ex, $"An exception occured while initializing a receiver in exchange {_exchangeName}.");
             throw;
         }
     }

@@ -34,11 +34,11 @@ internal sealed class RabbitContext : IRabbitContext
         });
     }
 
-    public IRabbitPipeline? GetPipeline(string exchange)
+    public IRabbitPipeline? GetPipeline(string exchangeName)
     {
-        if (Dictionary.TryGetValue(exchange, out var value) is false)
+        if (Dictionary.TryGetValue(exchangeName, out var value) is false)
         {
-            _logger?.LogWarning($"No pipeline with exchange {exchange} is registered.");
+            _logger?.LogWarning($"No pipeline with exchange name {exchangeName} is registered.");
             return null;
         }
 

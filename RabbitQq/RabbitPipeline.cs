@@ -9,20 +9,20 @@ namespace RabbitQq;
 
 internal class RabbitPipeline : IRabbitPipeline
 {
-    private readonly string _exchange;
-    private readonly RabbitClientFactory _factory;
+    private readonly string _exchangeName;
+    private readonly RabbitClientFactory _clientFactory;
     private readonly RabbitContext _context;
     
     private readonly RabbitSender _sender;
     private readonly ConcurrentDictionary<string,RabbitReceiver> _dictionary = new();
     
-    internal RabbitPipeline(RabbitContext context, string exchange, ExchangeDeclareOptions options)
+    internal RabbitPipeline(RabbitContext context, string exchangeName, ExchangeDeclareOptions options)
     {
-        _exchange = exchange;
+        _exchangeName = exchangeName;
         _context = context;
-        _factory = new(context,_exchange);
+        _clientFactory = new(context,_exchangeName);
 
-        _sender = _factory.CreateSender(options);
+        _sender = _clientFactory.CreateSender(options);
     }
 
     internal async Task InitializeAsync()
@@ -52,21 +52,21 @@ internal class RabbitPipeline : IRabbitPipeline
     {
         if (_dictionary.ContainsKey(options.Queue))
         {
-            _context._logger?.LogWarning($"A receiver with the name {options.Queue} is already registered in the pipeline {_exchange}.");
+            _context._logger?.LogWarning($"A receiver with the name {options.Queue} is already registered in the pipeline {_exchangeName}.");
             return;
         }
         
-        var receiver = _factory.CreateReceiver(options,handler);
+        var receiver = _clientFactory.CreateReceiver(options,handler);
         await receiver.InitializeAsync();
         
         _dictionary.TryAdd(options.Queue, receiver);
     }
 
-    public async Task DisposeReceiverAsync(string queue)
+    public async Task DisposeReceiverAsync(string queueName)
     {
-        if (_dictionary.TryRemove(queue,out var value) is false)
+        if (_dictionary.TryRemove(queueName,out var value) is false)
         {
-            _context._logger?.LogWarning($"A receiver with the name {queue} is not registered in the pipeline {_exchange}.");
+            _context._logger?.LogWarning($"A receiver with the name {queueName} is not registered in the pipeline {_exchangeName}.");
             return;
         }
         
